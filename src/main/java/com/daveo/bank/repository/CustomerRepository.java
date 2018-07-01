@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /**
- * The Customer repository interface.
+ * Spring data repository for {@link Customer}.
  *
  * @author baki
  */

@@ -1,6 +1,8 @@
 package com.daveo.bank.entity;
 
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -10,12 +12,13 @@ import java.util.List;
 @Table(name = "CUSTOMER")
 @Setter
 @Getter
+@NoArgsConstructor
 public class Customer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID")
-    private Integer id;
+    private int id;
 
     @Column(name = "FIRSTNAME")
     private String firstName;

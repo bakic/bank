@@ -6,7 +6,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
 /**
- * The Transaction repository interface.
+ * Spring data repository for {@link Transaction}.
  *
  * @author baki
  */

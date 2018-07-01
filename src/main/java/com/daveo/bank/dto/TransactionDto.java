@@ -1,9 +1,7 @@
 package com.daveo.bank.dto;
 
 import com.daveo.bank.enums.TransactionType;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -17,6 +15,7 @@ import java.time.LocalDateTime;
 @Builder
 public class TransactionDto {
     private LocalDateTime transactionDate;
-    private Float amount;
+    private float amount;
     private TransactionType type;
+
 }
