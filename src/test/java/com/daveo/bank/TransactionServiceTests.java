@@ -16,6 +16,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.data.domain.*;
+
+import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -39,11 +43,11 @@ public class TransactionServiceTests {
         account.setBalance(0f);
 
         float amount = 5;
-        Transaction transaction = Transaction.builder()
-                .account(account)
-                .amount(amount)
-                .type(TransactionType.DEPOSIT)
-                .build();
+
+        Transaction transaction = new Transaction();
+        transaction.setAccount(account);
+        transaction.setAmount(amount);
+        transaction.setType(TransactionType.DEPOSIT);
 
         AccountDto accountDto = AccountConverter.entityToDto(account);
 
@@ -90,11 +94,10 @@ public class TransactionServiceTests {
         account.setBalance(20f);
 
         float amount = 5;
-        Transaction transaction = Transaction.builder()
-                .account(account)
-                .amount(amount)
-                .type(TransactionType.WITHDRAWAL)
-                .build();
+        Transaction transaction = new Transaction();
+        transaction.setAccount(account);
+        transaction.setAmount(amount);
+        transaction.setType(TransactionType.WITHDRAWAL);
 
         AccountDto accountDto = AccountConverter.entityToDto(account);
 
@@ -144,6 +147,52 @@ public class TransactionServiceTests {
 
         assertThatThrownBy(() -> transactionService.retrieveMoney(account, amount))
                 .isInstanceOf(ArgumentsException.class);
+    }
+
+    @Test
+    public void list_transactions_should_succeed(){
+
+        Account account = new Account();
+        Transaction transaction1 = new Transaction();
+        transaction1.setId(1);
+        transaction1.setAmount(5f);
+        Transaction transaction2 = new Transaction();
+        transaction2.setId(2);
+        transaction2.setAmount(10f);
+
+        Page<Transaction> transactionsPage = new PageImpl<>(Arrays.asList(transaction1, transaction2));
+
+        Mockito.when(transactionRepository.findByAccountIdPaged(Mockito.any(Account.class), Mockito.any(Pageable.class)))
+                .thenReturn(transactionsPage);
+
+        List<TransactionDto> transactions = transactionService.listTransactions(account, 0, 5);
+
+        assertThat(transactions).isNotNull();
+        assertThat(transactions.size()).isEqualTo(2);
+
+        assertThat(transactions.get(0))
+                .extracting(TransactionDto::getAmount)
+                .containsExactly(5f);
+
+        assertThat(transactions.get(1))
+                .extracting(TransactionDto::getAmount)
+                .containsExactly(10f);
+    }
+
+
+    @Test
+    public void list_transactions_empty_should_succeed(){
+
+        Account account = new Account();
+        Page<Transaction> transactionsPage = Page.empty();
+
+        Mockito.when(transactionRepository.findByAccountIdPaged(Mockito.any(Account.class), Mockito.any(Pageable.class)))
+                .thenReturn(transactionsPage);
+
+        List<TransactionDto> transactions = transactionService.listTransactions(account, 1, 5);
+
+        assertThat(transactions).isNotNull();
+        assertThat(transactions.size()).isEqualTo(0);
     }
 
 }

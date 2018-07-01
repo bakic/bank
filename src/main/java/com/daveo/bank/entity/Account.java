@@ -7,6 +7,8 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "ACCOUNT")
@@ -32,4 +34,7 @@ public class Account {
     @ManyToOne
     @JoinColumn(name = "CUSTOMER_ID")
     private Customer customer;
+
+    @OneToMany
+    private List<Transaction> transactions = new ArrayList<>();
 }

@@ -3,6 +3,7 @@ package com.daveo.bank.entity;
 import com.daveo.bank.enums.TransactionType;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 @Table(name = "TRANSACTION")
 @Setter
 @Getter
-@Builder
+@NoArgsConstructor
 public class Transaction {
 
     @Id
@@ -20,8 +21,7 @@ public class Transaction {
     @Column(name = "ID")
     private int id;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "ID")
+    @ManyToOne
     private Account account;
 
     @Column(name = "TRANSACTION_DATE", nullable = false)
