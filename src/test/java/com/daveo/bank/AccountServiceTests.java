@@ -13,6 +13,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -122,4 +125,43 @@ public class AccountServiceTests {
                 .isInstanceOf(ArgumentsException.class);
     }
 
+    @Test
+    public void list_accounts_should_succeed(){
+
+        Account account1 = new Account();
+        account1.setId(1);
+        account1.setName("Account1");
+        account1.setBalance(20f);
+
+        Account account2 = new Account();
+        account2.setId(2);
+        account2.setName("Account2");
+        account2.setBalance(40f);
+
+        Mockito.when(repository.findAll()).thenReturn(Arrays.asList(account1, account2));
+
+        List<AccountDto> accountDtos = accountService.listAccounts();
+
+        assertThat(accountDtos).isNotNull();
+        assertThat(accountDtos.size()).isEqualTo(2);
+
+        assertThat(accountDtos.get(0))
+                .extracting(AccountDto::getId, AccountDto::getName, AccountDto::getBalance)
+                .containsExactly(1, "Account1", 20f);
+        assertThat(accountDtos.get(1))
+                .extracting(AccountDto::getId, AccountDto::getName, AccountDto::getBalance)
+                .containsExactly(2, "Account2", 40f);
+    }
+
+    @Test
+    public void list_accounts_empty_should_succeed(){
+
+        Mockito.when(repository.findAll()).thenReturn(new ArrayList<>());
+
+        List<AccountDto> accountDtos = accountService.listAccounts();
+
+        assertThat(accountDtos).isNotNull();
+        assertThat(accountDtos.size()).isEqualTo(0);
+
+    }
 }

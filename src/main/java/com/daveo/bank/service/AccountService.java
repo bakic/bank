@@ -5,13 +5,14 @@ import com.daveo.bank.dto.AccountDto;
 import com.daveo.bank.entity.Account;
 import com.daveo.bank.enums.TransactionType;
 import com.daveo.bank.exception.ArgumentsException;
-import com.daveo.bank.exception.FunctionalException;
 import com.daveo.bank.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * The account service class.
@@ -26,6 +27,16 @@ public class AccountService {
     private final AccountRepository repository;
 
     /**
+     * List all the accounts.
+     * @return A list of the accounts
+     */
+    public List<AccountDto> listAccounts() {
+        return repository.findAll().stream()
+                .map(AccountConverter::entityToDto)
+                .collect(Collectors.toList());
+    }
+
+    /**
      * Get the account by its id.
      *
      * @param id The identifier of the ccount
@@ -33,7 +44,7 @@ public class AccountService {
      */
     public Optional<Account> getAccount(final int id) {
         Optional<Account> account = repository.findById(id);
-        if(!account.isPresent()){
+        if (!account.isPresent()) {
             return Optional.empty();
         }
         return Optional.of(account.get());
