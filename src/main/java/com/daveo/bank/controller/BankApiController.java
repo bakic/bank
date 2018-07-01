@@ -34,4 +34,14 @@ public class BankApiController {
 
         return ResponseEntity.ok(transactionDto);
     }
+
+    @PostMapping(value = "/retrieve/{accountId}")
+    public ResponseEntity<TransactionDto> retrieve(@PathVariable int accountId, @RequestBody Transaction transaction){
+
+        Account account = accountService.getAccount(accountId)
+                .orElseThrow(() -> new AccountNotFoundException(accountId));
+        TransactionDto transactionDto = transactionService.retrieveMoney(account, transaction.getAmount());
+
+        return ResponseEntity.ok(transactionDto);
+    }
 }

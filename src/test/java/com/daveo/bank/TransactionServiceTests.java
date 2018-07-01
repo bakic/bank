@@ -82,4 +82,68 @@ public class TransactionServiceTests {
                 .isInstanceOf(ArgumentsException.class);
     }
 
+    @Test
+    public void retrieve_money_should_succeed() {
+
+        Account account = new Account();
+        account.setName("Account1");
+        account.setBalance(20f);
+
+        float amount = 5;
+        Transaction transaction = Transaction.builder()
+                .account(account)
+                .amount(amount)
+                .type(TransactionType.WITHDRAWAL)
+                .build();
+
+        AccountDto accountDto = AccountConverter.entityToDto(account);
+
+        //Mocks
+        Mockito.when(transactionRepository.save(Mockito.any(Transaction.class))).thenReturn(transaction);
+        Mockito.when(accountService.addToBalance(Mockito.eq(account), Mockito.eq(amount), Mockito.any(TransactionType.class)))
+                .thenReturn(accountDto);
+
+        TransactionDto transactionDto = transactionService.retrieveMoney(account, amount);
+
+        assertThat(transactionDto).isNotNull();
+        assertThat(transactionDto)
+                .extracting(TransactionDto::getAmount, TransactionDto::getType)
+                .containsExactly(amount, TransactionType.WITHDRAWAL);
+
+        Mockito.verify(accountService).addToBalance(account, amount, TransactionType.WITHDRAWAL);
+    }
+
+    @Test
+    public void retrieve_money_not_enough_balance_should_fail() {
+
+        Account account = new Account();
+        account.setName("Account1");
+        account.setBalance(10f);
+
+        float amount = 20;
+
+        assertThatThrownBy(() -> transactionService.retrieveMoney(account, amount))
+                .isInstanceOf(ArgumentsException.class);
+    }
+
+    @Test
+    public void retrieve_money_no_account_should_fail() {
+
+        Account account = null;
+        float amount = 5;
+
+        assertThatThrownBy(() -> transactionService.retrieveMoney(account, amount))
+                .isInstanceOf(ArgumentsException.class);
+    }
+
+    @Test
+    public void retrieve_money_negative_amount_should_fail() {
+
+        Account account = new Account();
+        float amount = -5;
+
+        assertThatThrownBy(() -> transactionService.retrieveMoney(account, amount))
+                .isInstanceOf(ArgumentsException.class);
+    }
+
 }
