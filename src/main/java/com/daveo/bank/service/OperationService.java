@@ -1,15 +1,15 @@
 package com.daveo.bank.service;
 
-import com.daveo.bank.converter.TransactionConverter;
-import com.daveo.bank.dto.TransactionDto;
+import com.daveo.bank.converter.OperationConverter;
+import com.daveo.bank.dto.OperationDto;
+import com.daveo.bank.dto.OperationResponse;
 import com.daveo.bank.entity.Account;
-import com.daveo.bank.entity.Transaction;
-import com.daveo.bank.enums.TransactionType;
+import com.daveo.bank.entity.Operation;
+import com.daveo.bank.enums.OperationType;
 import com.daveo.bank.exception.ArgumentsException;
-import com.daveo.bank.repository.TransactionRepository;
+import com.daveo.bank.repository.OperationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -17,40 +17,41 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * The Transaction service class.
+ * The OperationRequest service class.
  *
  * @author baki
  */
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class TransactionService {
+public class OperationService {
 
-    private final TransactionRepository repository;
+    private final OperationRepository repository;
     private final AccountService accountService;
 
     /**
-     * List all the transactions related to an account.
+     * List all the operations related to an account.
      *
      * @param account    The account
      * @param pageNumber The page number
      * @param pageSize   The number of elements by page
-     * @return A list of transactions
+     * @return A list of operations
      */
     @Transactional(readOnly=true)
-    public List<TransactionDto> listTransactions(final Account account, final int pageNumber, final int pageSize) {
+    public OperationResponse listOperation(final Account account, final int pageNumber, final int pageSize) {
 
         PageRequest request = PageRequest.of(pageNumber, pageSize, Sort.Direction.DESC, "id");
-        Page<Transaction> pagedTransactions = repository.findByAccountIdPaged(account, request);
+        Page<Operation> pagedOperations = repository.findByAccountIdPaged(account, request);
 
-        return pagedTransactions.getContent().stream()
-                .map(TransactionConverter::entityToDto)
+        List<OperationDto> operations =  pagedOperations.getContent().stream()
+                .map(OperationConverter::entityToDto)
                 .collect(Collectors.toList());
+
+        return new OperationResponse(pagedOperations.getTotalElements(), operations);
     }
 
     /**
@@ -58,22 +59,22 @@ public class TransactionService {
      *
      * @param account The account
      * @param amount  The amount of money
-     * @return A {@link TransactionDto} object
+     * @return A {@link OperationDto} object
      */
     @Transactional
-    public TransactionDto saveMoney(Account account, float amount) {
+    public OperationDto saveMoney(Account account, float amount) {
         checkInputs(account, amount);
 
-        Transaction transaction = new Transaction();
-        transaction.setAccount(account);
-        transaction.setAmount(amount);
-        transaction.setTransactionDate(LocalDateTime.now());
-        transaction.setType(TransactionType.DEPOSIT);
+        Operation operation = new Operation();
+        operation.setAccount(account);
+        operation.setAmount(amount);
+        operation.setOperationDate(LocalDateTime.now());
+        operation.setType(OperationType.DEPOSIT);
 
-        Transaction transactionEntity = repository.save(transaction);
-        account.getTransactions().add(transactionEntity);
-        accountService.addToBalance(account, amount, TransactionType.DEPOSIT);
-        return TransactionConverter.entityToDto(transactionEntity);
+        Operation operationEntity = repository.save(operation);
+        account.getOperations().add(operationEntity);
+        accountService.addToBalance(account, amount, OperationType.DEPOSIT);
+        return OperationConverter.entityToDto(operationEntity);
     }
 
     /**
@@ -81,25 +82,25 @@ public class TransactionService {
      *
      * @param account The account
      * @param amount  The amount of money
-     * @return A {@link TransactionDto} object
+     * @return A {@link OperationDto} object
      */
     @Transactional
-    public TransactionDto retrieveMoney(Account account, float amount) {
+    public OperationDto retrieveMoney(Account account, float amount) {
         checkInputs(account, amount);
         float currentBalance = account.getBalance();
         if (amount > currentBalance) {
             log.error("The amount to retrieve is bigger than the current balance");
             throw new ArgumentsException("The amount to retrieve is bigger than the current balance");
         }
-        Transaction transaction = new Transaction();
-        transaction.setAccount(account);
-        transaction.setAmount(amount);
-        transaction.setTransactionDate(LocalDateTime.now());
-        transaction.setType(TransactionType.WITHDRAWAL);
-        Transaction transactionEntity = repository.save(transaction);
-        account.getTransactions().add(transactionEntity);
-        accountService.addToBalance(account, amount, TransactionType.WITHDRAWAL);
-        return TransactionConverter.entityToDto(transactionEntity);
+        Operation operation = new Operation();
+        operation.setAccount(account);
+        operation.setAmount(amount);
+        operation.setOperationDate(LocalDateTime.now());
+        operation.setType(OperationType.WITHDRAWAL);
+        Operation operationEntity = repository.save(operation);
+        account.getOperations().add(operationEntity);
+        accountService.addToBalance(account, amount, OperationType.WITHDRAWAL);
+        return OperationConverter.entityToDto(operationEntity);
     }
 
     /**

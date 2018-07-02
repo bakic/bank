@@ -1,10 +1,10 @@
 package com.daveo.bank.enums;
 
-public enum TransactionType {
+public enum OperationType {
     
     WITHDRAWAL("Withdrawal"),
     DEPOSIT("Deposit");
 
-    TransactionType(String type) {
+    OperationType(String type) {
     }
 }

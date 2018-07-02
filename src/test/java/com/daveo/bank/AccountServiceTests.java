@@ -2,7 +2,7 @@ package com.daveo.bank;
 
 import com.daveo.bank.dto.AccountDto;
 import com.daveo.bank.entity.Account;
-import com.daveo.bank.enums.TransactionType;
+import com.daveo.bank.enums.OperationType;
 import com.daveo.bank.exception.ArgumentsException;
 import com.daveo.bank.repository.AccountRepository;
 import com.daveo.bank.service.AccountService;
@@ -71,7 +71,7 @@ public class AccountServiceTests {
         float balance = 10;
         float amount = 2;
         float balanceResult = 12;
-        TransactionType deposit = TransactionType.DEPOSIT;
+        OperationType deposit = OperationType.DEPOSIT;
         Account account = new Account();
         account.setId(id);
         account.setName(accountName);
@@ -94,7 +94,7 @@ public class AccountServiceTests {
         float balance = 10;
         float amount = 2;
         float balanceResult = 8;
-        TransactionType withdrawal = TransactionType.WITHDRAWAL;
+        OperationType withdrawal = OperationType.WITHDRAWAL;
         Account account = new Account();
         account.setId(id);
         account.setName(accountName);

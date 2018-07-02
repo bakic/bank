@@ -1,6 +1,5 @@
 package com.daveo.bank.entity;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -36,5 +35,5 @@ public class Account {
     private Customer customer;
 
     @OneToMany
-    private List<Transaction> transactions = new ArrayList<>();
+    private List<Operation> operations = new ArrayList<>();
 }

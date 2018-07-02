@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class Transaction {
+public class OperationRequest {
 
     private float amount;
 }

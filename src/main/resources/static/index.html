@@ -1,14 +1,41 @@
 <!DOCTYPE html>
-<html lang="en"
-      xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <title>THE Bank</title>
+<head lang="en">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>THE BANK</title>
+  <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/normalize.css">
+  <link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/main.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="bower_components/html5-boilerplate/dist/js/vendor/modernizr-2.8.3.min.js"></script>
 </head>
-<body>
+<body ng-app="bankApp">
+<div class="container">
 
+  <ul class="nav justify-content-center">
+    <li class="nav-item">
+      <a class="nav-link" href="#!/">History</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#!/operations">Operations</a>
+    </li>
+  </ul>
+
+  <div ng-view></div>
+</div>
+
+
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+  <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+
+  <script src="bower_components/angular/angular.js"></script>
+  <script src="bower_components/angular-route/angular-route.js"></script>
+  <script src="lib/ui-bootstrap-tpls-2.5.0.min.js"></script>
+  <script src="app.js"></script>
+  <script src="controller/operationsController.js"></script>
+  <script src="controller/historyController.js"></script>
+  <script src="service/accountService.js"></script>
+  <script src="service/operationsService.js"></script>
 </body>
 </html>

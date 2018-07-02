@@ -1,0 +1,35 @@
+<br/>
+<div class="row">
+    <div class="col-md-4 offset-md-4">
+        <select class="custom-select" ng-model="selectedAccountId" ng-change="accountChange()">
+            <option value="-1">Choose an account</option>
+            <option ng-repeat="account in accounts" value="{{account.id}}">{{account.name}}</option>
+        </select>
+    </div>
+</div>
+<br/>
+<div class="row col-md-4 offset-md-4" ng-if="selectedAccount">
+    <label class="font-weight-bold">Balance : </label> {{selectedAccount.balance}} €
+</div>
+<div class="row" ng-if="displayedAlert"
+    uib-alert ng-class="'alert-' + displayedAlert.type" close="closeAlert()">{{displayedAlert.msg}}
+</div>
+<div class="row">
+    <table class="table table-hover col-md-10 offset-md-1">
+        <thead>
+        <tr>
+            <th scope="col">Date</th>
+            <th scope="col">Amount</th>
+            <th scope="col">Operation</th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="operation in history.operations">
+                <td>{{operation.operationDate | date : 'dd/MM/yyyy HH:mm:ss'}}</td>
+                <td>{{operation.amount}}</td>
+                <td>{{operation.type}}</td>
+            </tr>
+        </tbody>
+    </table>
+    
+</div>

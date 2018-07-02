@@ -3,7 +3,7 @@ package com.daveo.bank.service;
 import com.daveo.bank.converter.AccountConverter;
 import com.daveo.bank.dto.AccountDto;
 import com.daveo.bank.entity.Account;
-import com.daveo.bank.enums.TransactionType;
+import com.daveo.bank.enums.OperationType;
 import com.daveo.bank.exception.ArgumentsException;
 import com.daveo.bank.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
@@ -57,17 +57,17 @@ public class AccountService {
      * @param amount  The amount
      * @return The {@link AccountDto} object
      */
-    public AccountDto addToBalance(final Account account, final float amount, final TransactionType transactionType) {
+    public AccountDto addToBalance(final Account account, final float amount, final OperationType operationType) {
 
         float oldBalance = account.getBalance();
         float newBalance;
-        if (TransactionType.DEPOSIT.equals(transactionType)) {
+        if (OperationType.DEPOSIT.equals(operationType)) {
             newBalance = oldBalance + amount;
-        } else if (TransactionType.WITHDRAWAL.equals(transactionType)) {
+        } else if (OperationType.WITHDRAWAL.equals(operationType)) {
             newBalance = oldBalance - amount;
         } else {
-            log.error("The transaction type '{}' is not defined, the balance will not change", transactionType);
-            throw new ArgumentsException("Transaction type not defined");
+            log.error("The operation type '{}' is not defined, the balance will not change", operationType);
+            throw new ArgumentsException("OperationRequest type not defined");
         }
 
         account.setBalance(newBalance);
