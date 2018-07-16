@@ -4,6 +4,7 @@ import com.daveo.bank.entity.Customer;
 import com.daveo.bank.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -23,6 +24,7 @@ public class CustomerService {
      *
      * @return A list of customers
      */
+    @Transactional(readOnly = true)
     public List<Customer> listCustomers() {
         return repository.findAll();
     }

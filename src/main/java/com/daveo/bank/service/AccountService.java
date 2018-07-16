@@ -10,9 +10,9 @@ import com.daveo.bank.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -31,6 +31,7 @@ public class AccountService {
      * List all the accounts.
      * @return A list of the accounts
      */
+    @Transactional(readOnly = true)
     public List<AccountDto> listAccounts() {
         return repository.findAll().stream()
                 .map(AccountConverter::entityToDto)
@@ -43,6 +44,7 @@ public class AccountService {
      * @param id The identifier of the ccount
      * @return A {@link Account} object
      */
+    @Transactional
     public Account getAccount(final int id) {
         return repository.findById(id).orElseThrow(() -> new AccountNotFoundException(id));
     }
@@ -54,6 +56,7 @@ public class AccountService {
      * @param amount  The amount
      * @return The {@link AccountDto} object
      */
+    @Transactional
     public AccountDto addToBalance(final Account account, final float amount, final OperationType operationType) {
 
         float oldBalance = account.getBalance();
