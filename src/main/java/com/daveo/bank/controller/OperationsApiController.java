@@ -36,8 +36,7 @@ public class OperationsApiController {
     @PostMapping(value = "/deposit/{accountId}")
     public ResponseEntity<OperationDto> deposit(@PathVariable int accountId, @RequestBody OperationRequest operationRequest) {
 
-        Account account = accountService.getAccount(accountId)
-                .orElseThrow(() -> new AccountNotFoundException(accountId));
+        Account account = accountService.getAccount(accountId);
         OperationDto operationDto = operationService.saveMoney(account, operationRequest.getAmount());
 
         return ResponseEntity.ok(operationDto);
@@ -53,8 +52,7 @@ public class OperationsApiController {
     @PostMapping(value = "/retrieve/{accountId}")
     public ResponseEntity<OperationDto> retrieve(@PathVariable int accountId, @RequestBody OperationRequest operationRequest) {
 
-        Account account = accountService.getAccount(accountId)
-                .orElseThrow(() -> new AccountNotFoundException(accountId));
+        Account account = accountService.getAccount(accountId);
         OperationDto operationDto = operationService.retrieveMoney(account, operationRequest.getAmount());
 
         return ResponseEntity.ok(operationDto);
@@ -73,8 +71,7 @@ public class OperationsApiController {
                                                      @RequestParam(required = false, defaultValue = "0") int noPage,
                                                      @RequestParam(required = false, defaultValue = "5") int size) {
 
-        Account account = accountService.getAccount(accountId)
-                .orElseThrow(() -> new AccountNotFoundException(accountId));
+        Account account = accountService.getAccount(accountId);
 
         OperationResponse operations = operationService.listOperation(account, noPage, size);
         return ResponseEntity.ok(operations);

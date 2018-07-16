@@ -42,8 +42,7 @@ public class AccountApiController {
      */
     @GetMapping(value = "/account/{accountId}")
     public ResponseEntity<AccountDto> getAccount(@PathVariable int accountId) {
-        Account account = accountService.getAccount(accountId)
-                .orElseThrow(() -> new AccountNotFoundException(accountId));
+        Account account = accountService.getAccount(accountId);
         return ResponseEntity.ok(AccountConverter.entityToDto(account));
     }
 }

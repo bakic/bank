@@ -4,6 +4,7 @@ import com.daveo.bank.converter.AccountConverter;
 import com.daveo.bank.dto.AccountDto;
 import com.daveo.bank.entity.Account;
 import com.daveo.bank.enums.OperationType;
+import com.daveo.bank.exception.AccountNotFoundException;
 import com.daveo.bank.exception.ArgumentsException;
 import com.daveo.bank.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
@@ -42,12 +43,8 @@ public class AccountService {
      * @param id The identifier of the ccount
      * @return A {@link Account} object
      */
-    public Optional<Account> getAccount(final int id) {
-        Optional<Account> account = repository.findById(id);
-        if (!account.isPresent()) {
-            return Optional.empty();
-        }
-        return Optional.of(account.get());
+    public Account getAccount(final int id) {
+        return repository.findById(id).orElseThrow(() -> new AccountNotFoundException(id));
     }
 
     /**

@@ -3,6 +3,7 @@ package com.daveo.bank;
 import com.daveo.bank.dto.AccountDto;
 import com.daveo.bank.entity.Account;
 import com.daveo.bank.enums.OperationType;
+import com.daveo.bank.exception.AccountNotFoundException;
 import com.daveo.bank.exception.ArgumentsException;
 import com.daveo.bank.repository.AccountRepository;
 import com.daveo.bank.service.AccountService;
@@ -44,10 +45,10 @@ public class AccountServiceTests {
 
         Mockito.when(repository.findById(Mockito.eq(id))).thenReturn(Optional.of(account));
 
-        Optional<Account> accountResult = accountService.getAccount(id);
+        Account accountResult = accountService.getAccount(id);
 
-        assertThat(accountResult.isPresent()).isTrue();
-        assertThat(accountResult.get())
+        assertThat(accountResult).isNotNull();
+        assertThat(accountResult)
                 .extracting(Account::getId, Account::getBalance, Account::getName)
                 .containsExactly(id, balance, accountName);
 
@@ -58,10 +59,10 @@ public class AccountServiceTests {
 
         int id = 1;
 
-        Mockito.when(repository.findById(Mockito.eq(id))).thenReturn(Optional.empty());
+        Mockito.when(repository.findById(Mockito.eq(id))).thenThrow(new AccountNotFoundException(id));
 
-        Optional<Account> accountResult = accountService.getAccount(id);
-        assertThat(accountResult.isPresent()).isFalse();
+        assertThatThrownBy(() -> accountService.getAccount(id))
+                .isInstanceOf(AccountNotFoundException.class);
     }
 
     @Test
@@ -126,7 +127,7 @@ public class AccountServiceTests {
     }
 
     @Test
-    public void list_accounts_should_succeed(){
+    public void list_accounts_should_succeed() {
 
         Account account1 = new Account();
         account1.setId(1);
@@ -154,7 +155,7 @@ public class AccountServiceTests {
     }
 
     @Test
-    public void list_accounts_empty_should_succeed(){
+    public void list_accounts_empty_should_succeed() {
 
         Mockito.when(repository.findAll()).thenReturn(new ArrayList<>());
 
