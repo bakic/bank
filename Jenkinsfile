@@ -1,20 +1,25 @@
 pipeline { 
     agent any 
     stages {
-        stage('Build') { 
+        stage('Compile') { 
             steps { 
-                sh 'make' 
+				withMaven(maven: 'maven_3_5_4'){
+					bat 'mvn clean compile'
+				}  
             }
         }
         stage('Test'){
             steps {
-                sh 'make check'
-                junit 'reports/**/*.xml' 
+                withMaven(maven: 'maven_3_5_4'){
+					bat 'mvn test'
+				}  
             }
         }
         stage('Deploy') {
             steps {
-                sh 'make publish'
+                withMaven(maven: 'maven_3_5_4'){
+					bat 'mvn install'
+				}  
             }
         }
     }
